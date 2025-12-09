@@ -19,6 +19,7 @@
 
     <build>
         <defaultGoal>clean package</defaultGoal>
+        <finalName>GutselCraft-Paper-${project.version}</finalName>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <plugins>
             <plugin>

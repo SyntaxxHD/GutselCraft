@@ -2,10 +2,13 @@
 
 # Anti-Despawn Settings for Death-Dropped Items
 anti-despawn:
-  # Enable or disable the anti-despawn feature
   enabled: true
   
   # Despawn time in seconds
   # -1 = never despawn
   # 0 or positive number = seconds until despawn (e.g., 3600 = 1 hour)
   despawn-time: -1
+
+# Dynamic Slots Settings
+dynamic-slots:
+  enabled: false

@@ -1,5 +1,5 @@
 name: GutselCraft
-version: '1.0.0'
+version: '${project.version}'
 main: de.gutselcraft.gutselCraft.GutselCraft
 api-version: '1.21'
 authors: [ Syntaxx ]
@@ -12,15 +12,26 @@ commands:
     usage: /<command>
   antidespawn:
     description: Manage anti-despawn settings for death-dropped items
-    usage: /<command> [toggle|settime|status]
+    usage: /<command> [toggle|settime]
     permission: gutselcraft.antidespawn
     aliases: [ad, nodespawn]
   gutselcraft:
     description: Reload the plugin configuration
     usage: /<command> reload
     aliases: [gc]
+  dynamicslots:
+    description: Toggle dynamic max player slots
+    usage: /<command>
+    permission: gutselcraft.dynamicslots
+    aliases: [slots, ds]
+  mitmachen:
+    description: Stimme ab um die Nacht zu überspringen
+    usage: /<command>
 
 permissions:
   gutselcraft.antidespawn:
     description: Allows management of anti-despawn settings
+    default: op
+  gutselcraft.dynamicslots:
+    description: Allows toggling dynamic slots feature
     default: op

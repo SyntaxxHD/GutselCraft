@@ -33,7 +33,6 @@ class AntiDespawnCommand(private val plugin: Plugin) : CommandExecutor, TabCompl
         when (args[0].lowercase()) {
             "toggle" -> handleToggle(sender)
             "settime" -> handleSetTime(sender, args)
-            "status" -> handleStatus(sender)
             else -> sendHelp(sender)
         }
         
@@ -108,47 +107,10 @@ class AntiDespawnCommand(private val plugin: Plugin) : CommandExecutor, TabCompl
         )
     }
     
-    private fun handleStatus(sender: CommandSender) {
-        val enabled = plugin.config.getBoolean("anti-despawn.enabled", true)
-        val despawnTime = plugin.config.getInt("anti-despawn.despawn-time", -1)
-        
-        val statusColor = if (enabled) NamedTextColor.GREEN else NamedTextColor.RED
-        val statusText = if (enabled) "Enabled" else "Disabled"
-        
-        val timeText = when (despawnTime) {
-            -1 -> "never"
-            0 -> "instantly (normal)"
-            1 -> "1 second"
-            else -> "$despawnTime seconds"
-        }
-        
-        sender.sendMessage(
-            Component.text("Anti-Despawn Status:")
-                .color(NamedTextColor.DARK_GREEN)
-                .decorate(TextDecoration.BOLD)
-        )
-        sender.sendMessage(
-            Component.text("Status: ")
-                .color(NamedTextColor.WHITE)
-                .append(
-                    Component.text(statusText)
-                        .color(statusColor)
-                )
-        )
-        sender.sendMessage(
-            Component.text("Despawn Time: ")
-                .color(NamedTextColor.WHITE)
-                .append(
-                    Component.text(timeText)
-                        .color(NamedTextColor.DARK_GREEN)
-                )
-        )
-    }
-    
     private fun sendHelp(sender: CommandSender) {
         sender.sendMessage(
-            Component.text("Anti-Despawn Commands:")
-                .color(NamedTextColor.DARK_GREEN)
+            Component.text("=== Anti-Despawn Commands ===")
+                .color(NamedTextColor.GOLD)
                 .decorate(TextDecoration.BOLD)
         )
         sender.sendMessage(
@@ -164,14 +126,6 @@ class AntiDespawnCommand(private val plugin: Plugin) : CommandExecutor, TabCompl
                 .color(NamedTextColor.YELLOW)
                 .append(
                     Component.text(" - Set despawn time")
-                        .color(NamedTextColor.WHITE)
-                )
-        )
-        sender.sendMessage(
-            Component.text("/antidespawn status")
-                .color(NamedTextColor.YELLOW)
-                .append(
-                    Component.text(" - Show current status")
                         .color(NamedTextColor.WHITE)
                 )
         )
@@ -192,7 +146,7 @@ class AntiDespawnCommand(private val plugin: Plugin) : CommandExecutor, TabCompl
         }
         
         return when (args.size) {
-            1 -> listOf("toggle", "settime", "status").filter { it.startsWith(args[0].lowercase()) }
+            1 -> listOf("toggle", "settime").filter { it.startsWith(args[0].lowercase()) }
             2 -> if (args[0].lowercase() == "settime") {
                 listOf("-1", "0", "300", "600", "1800", "3600").filter { it.startsWith(args[1]) }
             } else emptyList()
