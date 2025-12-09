@@ -2,6 +2,25 @@ name: GutselCraft
 version: '1.0.0'
 main: de.gutselcraft.gutselCraft.GutselCraft
 api-version: '1.21'
-authors: [ Leonard Mueller ]
+authors: [ Syntaxx ]
 description: Server Plugin for GutselCraft.de Minecraft Server
 website: https://gutselcraft.de
+
+commands:
+  ping:
+    description: Shows your current ping to the server
+    usage: /<command>
+  antidespawn:
+    description: Manage anti-despawn settings for death-dropped items
+    usage: /<command> [toggle|settime|status]
+    permission: gutselcraft.antidespawn
+    aliases: [ad, nodespawn]
+  gutselcraft:
+    description: Reload the plugin configuration
+    usage: /<command> reload
+    aliases: [gc]
+
+permissions:
+  gutselcraft.antidespawn:
+    description: Allows management of anti-despawn settings
+    default: op
