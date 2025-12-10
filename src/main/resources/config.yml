@@ -12,3 +12,28 @@ anti-despawn:
 # Dynamic Slots Settings
 dynamic-slots:
   enabled: false
+
+# Welcome Book Settings
+welcome-book:
+  enabled: true
+  
+  # Server commands with descriptions
+  commands:
+    - command: "/sit"
+      description: "Zum Hinsetzen"
+    - command: "/imageframe create <name> <url>"
+      description: "Erstelle Bild-Maps"
+      note: "(Benötigt leere Maps)"
+  
+  # Server-supported Fabric mods (work with server-side features)
+  server-supported-mods:
+    - "Simple Voice Chat"
+    - "Distant Horizons"
+  
+  # Recommended client-side mods
+  recommended-mods:
+    - "Sodium"
+    - "Xaeros MiniMap"
+    - "Xaeros World Map"
+    - "Freecam"
+    - "Iris Shaders"

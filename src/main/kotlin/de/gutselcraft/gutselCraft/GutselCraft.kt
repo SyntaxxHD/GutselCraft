@@ -5,6 +5,7 @@ import de.gutselcraft.gutselCraft.commands.DynamicSlotsCommand
 import de.gutselcraft.gutselCraft.commands.PingCommand
 import de.gutselcraft.gutselCraft.commands.ReloadCommand
 import de.gutselcraft.gutselCraft.listeners.DeathItemProtectionListener
+import de.gutselcraft.gutselCraft.listeners.FabricRecommendationListener
 import de.gutselcraft.gutselCraft.listeners.ProjectileKnockbackListener
 import de.gutselcraft.gutselCraft.listeners.ServerListPingListener
 import de.gutselcraft.gutselCraft.votesleep.SleepVoteManager
@@ -14,6 +15,7 @@ import de.gutselcraft.gutselCraft.votesleep.listeners.PlayerBedEnterListener
 import de.gutselcraft.gutselCraft.votesleep.listeners.PlayerBedLeaveListener
 import de.gutselcraft.gutselCraft.votesleep.listeners.PlayerJoinQuitListener
 import de.gutselcraft.gutselCraft.votesleep.listeners.WorldChangeListener
+import de.gutselcraft.gutselCraft.welcomebook.WelcomeBookListener
 import org.bukkit.plugin.java.JavaPlugin
 
 class GutselCraft : JavaPlugin() {
@@ -27,8 +29,10 @@ class GutselCraft : JavaPlugin() {
         
         // Register listeners
         server.pluginManager.registerEvents(DeathItemProtectionListener(this), this)
+        server.pluginManager.registerEvents(FabricRecommendationListener(this), this)
         server.pluginManager.registerEvents(ProjectileKnockbackListener(), this)
         server.pluginManager.registerEvents(ServerListPingListener(this), this)
+        server.pluginManager.registerEvents(WelcomeBookListener(this), this)
         server.pluginManager.registerEvents(PlayerBedEnterListener(this), this)
         server.pluginManager.registerEvents(PlayerBedLeaveListener(this), this)
         server.pluginManager.registerEvents(PlayerJoinQuitListener(this), this)
