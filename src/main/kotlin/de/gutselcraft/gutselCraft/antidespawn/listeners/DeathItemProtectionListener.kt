@@ -1,4 +1,4 @@
-package de.gutselcraft.gutselCraft.listeners
+package de.gutselcraft.gutselCraft.antidespawn.listeners
 
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Item

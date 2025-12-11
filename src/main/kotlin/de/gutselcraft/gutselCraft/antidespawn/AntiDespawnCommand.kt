@@ -1,4 +1,4 @@
-package de.gutselcraft.gutselCraft.commands
+package de.gutselcraft.gutselCraft.antidespawn
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor

@@ -1,4 +1,4 @@
-package de.gutselcraft.gutselCraft.listeners
+package de.gutselcraft.gutselCraft.projectileknockback
 
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player

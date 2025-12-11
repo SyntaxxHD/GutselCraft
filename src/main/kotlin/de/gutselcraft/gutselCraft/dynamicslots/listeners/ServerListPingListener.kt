@@ -1,4 +1,4 @@
-package de.gutselcraft.gutselCraft.listeners
+package de.gutselcraft.gutselCraft.dynamicslots.listeners
 
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

@@ -1,4 +1,4 @@
-package de.gutselcraft.gutselCraft.listeners
+package de.gutselcraft.gutselCraft.fabricrecommendation
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent

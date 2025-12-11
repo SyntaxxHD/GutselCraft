@@ -1,13 +1,12 @@
 package de.gutselcraft.gutselCraft
 
-import de.gutselcraft.gutselCraft.commands.AntiDespawnCommand
-import de.gutselcraft.gutselCraft.commands.DynamicSlotsCommand
-import de.gutselcraft.gutselCraft.commands.PingCommand
-import de.gutselcraft.gutselCraft.commands.ReloadCommand
-import de.gutselcraft.gutselCraft.listeners.DeathItemProtectionListener
-import de.gutselcraft.gutselCraft.listeners.FabricRecommendationListener
-import de.gutselcraft.gutselCraft.listeners.ProjectileKnockbackListener
-import de.gutselcraft.gutselCraft.listeners.ServerListPingListener
+import de.gutselcraft.gutselCraft.antidespawn.AntiDespawnCommand
+import de.gutselcraft.gutselCraft.antidespawn.listeners.DeathItemProtectionListener
+import de.gutselcraft.gutselCraft.dynamicslots.DynamicSlotsCommand
+import de.gutselcraft.gutselCraft.dynamicslots.listeners.ServerListPingListener
+import de.gutselcraft.gutselCraft.fabricrecommendation.FabricRecommendationListener
+import de.gutselcraft.gutselCraft.ping.PingCommand
+import de.gutselcraft.gutselCraft.projectileknockback.ProjectileKnockbackListener
 import de.gutselcraft.gutselCraft.votesleep.SleepVoteManager
 import de.gutselcraft.gutselCraft.votesleep.commands.MitmachenCommand
 import de.gutselcraft.gutselCraft.votesleep.listeners.GameModeChangeListener
