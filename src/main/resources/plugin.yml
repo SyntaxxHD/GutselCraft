@@ -1,5 +1,5 @@
 name: GutselCraft
-version: '${project.version}'
+version: '1.0.0'
 main: de.gutselcraft.gutselCraft.GutselCraft
 api-version: '1.21'
 authors: [ Syntaxx ]

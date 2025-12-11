@@ -7,11 +7,11 @@ anti-despawn:
   # Despawn time in seconds
   # -1 = never despawn
   # 0 or positive number = seconds until despawn (e.g., 3600 = 1 hour)
-  despawn-time: -1
+  despawn-time: 3600
 
 # Dynamic Slots Settings
 dynamic-slots:
-  enabled: false
+  enabled: true
 
 # Welcome Book Settings
 welcome-book:
@@ -23,17 +23,24 @@ welcome-book:
       description: "Zum Hinsetzen"
     - command: "/imageframe create <name> <url>"
       description: "Erstelle Bild-Maps"
-      note: "(Benötigt leere Maps)"
+      note: "(Benötigt leere Karten)"
   
   # Server-supported Fabric mods (work with server-side features)
   server-supported-mods:
-    - "Simple Voice Chat"
-    - "Distant Horizons"
+    - name: "Simple Voice Chat"
+      link: "https://modrinth.com/mod/simple-voice-chat"
+    - name: "Distant Horizons"
+      link: "https://modrinth.com/mod/distanthorizons"
   
   # Recommended client-side mods
   recommended-mods:
-    - "Sodium"
-    - "Xaeros MiniMap"
-    - "Xaeros World Map"
-    - "Freecam"
-    - "Iris Shaders"
+    - name: "Sodium"
+      link: "https://modrinth.com/mod/sodium"
+    - name: "Freecam"
+      link: "https://modrinth.com/mod/freecam"
+    - name: "Xaero's Minimap"
+      link: "https://modrinth.com/mod/xaeros-minimap"
+    - name: "Xaero's World Map"
+      link: "https://modrinth.com/mod/xaeros-worldmap"
+    - name: "Iris Shaders"
+      link: "https://modrinth.com/mod/iris"
