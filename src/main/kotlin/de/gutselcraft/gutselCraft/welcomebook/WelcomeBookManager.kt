@@ -53,7 +53,7 @@ class WelcomeBookManager(private val plugin: Plugin) {
             
             page.append(
                 Component.text("$command\n")
-                    .color(NamedTextColor.DARK_GREEN)
+                    .color(NamedTextColor.DARK_PURPLE)
             )
             page.append(
                 Component.text("$description\n")
@@ -101,12 +101,12 @@ class WelcomeBookManager(private val plugin: Plugin) {
             
             page.append(
                 Component.text("• ")
-                    .color(NamedTextColor.DARK_GREEN)
+                    .color(NamedTextColor.DARK_PURPLE)
             )
             
             // Create mod name component
             val modComponent = Component.text("$modName\n")
-                .color(NamedTextColor.DARK_GREEN)
+                .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.UNDERLINED)
             
             // Add click event if link is provided
@@ -142,12 +142,12 @@ class WelcomeBookManager(private val plugin: Plugin) {
             
             page.append(
                 Component.text("• ")
-                    .color(NamedTextColor.DARK_GREEN)
+                    .color(NamedTextColor.DARK_PURPLE)
             )
             
             // Create mod name component
             val modComponent = Component.text("$modName\n")
-                .color(NamedTextColor.DARK_GREEN)
+                .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.UNDERLINED)
             
             // Add click event if link is provided
