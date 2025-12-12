@@ -121,9 +121,6 @@ class WelcomeBookManager(private val plugin: Plugin) {
     }
 
     private fun createRecommendedModsPage(): Component {
-        val config = plugin.config
-        val recommendedMods = config.getMapList("welcome-book.recommended-mods")
-
         val page = Component.text()
             .append(
                 Component.text("Empfohlene Fabric Mods\n\n")
@@ -131,32 +128,15 @@ class WelcomeBookManager(private val plugin: Plugin) {
                     .decorate(TextDecoration.BOLD)
             )
             .append(
-                Component.text("Folgende Mods sind empfohlen die beste Spielerfahrung:\n\n")
+                Component.text("Weitere empfohlene Mods findest du auf der Website:\n\n")
                     .color(NamedTextColor.BLACK)
             )
-
-        // Add each recommended mod
-        recommendedMods.forEach { modMap ->
-            val modName = modMap["name"] as? String ?: ""
-            val modLink = modMap["link"] as? String
-            
-            page.append(
-                Component.text("• ")
+            .append(
+                Component.text("→ gutselcraft.de/#mods")
                     .color(NamedTextColor.DARK_PURPLE)
+                    .decorate(TextDecoration.UNDERLINED)
+                    .clickEvent(ClickEvent.openUrl("https://gutselcraft.de/#mods"))
             )
-            
-            // Create mod name component
-            val modComponent = Component.text("$modName\n")
-                .color(NamedTextColor.DARK_PURPLE)
-                .decorate(TextDecoration.UNDERLINED)
-            
-            // Add click event if link is provided
-            if (modLink != null && modLink.isNotEmpty()) {
-                page.append(modComponent.clickEvent(ClickEvent.openUrl(modLink)))
-            } else {
-                page.append(modComponent)
-            }
-        }
 
         return page.build()
     }
