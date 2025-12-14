@@ -61,6 +61,7 @@ object SleepVoteManager {
         eligiblePlayers.forEach { p ->
             votes!![p.uniqueId] = false
             bossBar!!.addPlayer(p)
+            updateTabListPrefix(p, false)
             
             // Send clickable message
             val message = Component.text("${player.displayName} will Heia Bubu machen! ")
@@ -84,6 +85,7 @@ object SleepVoteManager {
         votes?.let { voteMap ->
             if (voteMap.containsKey(playerUuid) && voteMap[playerUuid] == false) {
                 voteMap[playerUuid] = true
+                updateTabListPrefix(player, true)
                 updateBossBar()
                 checkVote()
             }
@@ -96,6 +98,7 @@ object SleepVoteManager {
             if (voteMap.containsKey(playerUuid)) {
                 // Set vote back to false (player left bed)
                 voteMap[playerUuid] = false
+                updateTabListPrefix(player, false)
                 updateBossBar()
                 checkVote()
             }
@@ -108,6 +111,7 @@ object SleepVoteManager {
             if (voteMap.containsKey(playerUuid)) {
                 voteMap.remove(playerUuid)
                 bossBar?.removePlayer(player)
+                clearTabListPrefix(player)
                 updateBossBar()
                 checkVote()
             }
@@ -120,6 +124,7 @@ object SleepVoteManager {
             votes?.let { voteMap ->
                 voteMap[player.uniqueId] = false
                 bossBar?.addPlayer(player)
+                updateTabListPrefix(player, false)
                 updateBossBar()
                 
                 val message = Component.text("Jemand will Heia Bubu machen! ")
@@ -182,6 +187,13 @@ object SleepVoteManager {
     }
     
     fun endVote() {
+        // Clear tab list prefixes for all voting players
+        votes?.keys?.forEach { playerUuid ->
+            Bukkit.getPlayer(playerUuid)?.let { player ->
+                clearTabListPrefix(player)
+            }
+        }
+        
         bossBar?.removeAll()
         bossBar = null
         votes = null
@@ -194,4 +206,17 @@ object SleepVoteManager {
     fun getVoteWorld(): World? = voteWorld
     
     fun isNight(time: Long): Boolean = time in 12541..23500
+    
+    private fun updateTabListPrefix(player: Player, hasVoted: Boolean) {
+        val prefix = if (hasVoted) {
+            Component.text("✔ ").color(NamedTextColor.GREEN)
+        } else {
+            Component.text("✖ ").color(NamedTextColor.RED)
+        }
+        player.playerListName(prefix.append(Component.text(player.displayName)))
+    }
+    
+    private fun clearTabListPrefix(player: Player) {
+        player.playerListName(null)
+    }
 }
