@@ -1,6 +1,7 @@
 package de.gutselcraft.gutselCraft.votesleep
 
 import org.bukkit.scheduler.BukkitRunnable
+import kotlin.random.Random
 
 class NightSkipTask : BukkitRunnable() {
     
@@ -18,8 +19,12 @@ class NightSkipTask : BukkitRunnable() {
         if (currentTime >= 12541) {
             world.time = currentTime + 100
         } else {
-            // Reached day time
-            world.time = 0
+            // Clear weather
+            if (world.hasStorm()) {
+                world.setStorm(false)
+                world.isThundering = false
+            }
+            
             SleepVoteManager.endVote()
             cancel()
         }

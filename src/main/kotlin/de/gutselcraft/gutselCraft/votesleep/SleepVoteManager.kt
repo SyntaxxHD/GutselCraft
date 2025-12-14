@@ -27,10 +27,9 @@ object SleepVoteManager {
     }
     
     fun startVote(player: Player) {
-        // Check if player is in bed, it's night, and no vote is running
+        // Check if player is in bed and no vote is running
         if (voteWorld != null) return
         if (!player.isSleeping) return
-        if (!isNight(player.world.time)) return
         if (player.gameMode != GameMode.SURVIVAL && player.gameMode != GameMode.ADVENTURE) return
         
         votes = mutableMapOf()
@@ -64,7 +63,7 @@ object SleepVoteManager {
             bossBar!!.addPlayer(p)
             
             // Send clickable message
-            val message = Component.text("${player.name} will Heia Bubu machen! ")
+            val message = Component.text("${player.displayName} will Heia Bubu machen! ")
                 .color(NamedTextColor.WHITE)
                 .append(
                     Component.text("[Mitmachen]")

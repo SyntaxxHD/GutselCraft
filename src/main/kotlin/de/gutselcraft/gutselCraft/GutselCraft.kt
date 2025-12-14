@@ -1,10 +1,12 @@
 package de.gutselcraft.gutselCraft
 
+import de.gutselcraft.gutselCraft.ReloadCommand
 import de.gutselcraft.gutselCraft.antidespawn.AntiDespawnCommand
 import de.gutselcraft.gutselCraft.antidespawn.listeners.DeathItemProtectionListener
 import de.gutselcraft.gutselCraft.dynamicslots.DynamicSlotsCommand
 import de.gutselcraft.gutselCraft.dynamicslots.listeners.ServerListPingListener
 import de.gutselcraft.gutselCraft.fabricrecommendation.FabricRecommendationListener
+import de.gutselcraft.gutselCraft.joinmessages.JoinQuitMessageListener
 import de.gutselcraft.gutselCraft.ping.PingCommand
 import de.gutselcraft.gutselCraft.projectileknockback.ProjectileKnockbackListener
 import de.gutselcraft.gutselCraft.votesleep.SleepVoteManager
@@ -32,6 +34,7 @@ class GutselCraft : JavaPlugin() {
         server.pluginManager.registerEvents(ProjectileKnockbackListener(), this)
         server.pluginManager.registerEvents(ServerListPingListener(this), this)
         server.pluginManager.registerEvents(WelcomeBookListener(this), this)
+        server.pluginManager.registerEvents(JoinQuitMessageListener(this), this)
         server.pluginManager.registerEvents(PlayerBedEnterListener(this), this)
         server.pluginManager.registerEvents(PlayerBedLeaveListener(this), this)
         server.pluginManager.registerEvents(PlayerJoinQuitListener(this), this)
