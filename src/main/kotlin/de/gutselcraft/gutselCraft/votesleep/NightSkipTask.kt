@@ -15,9 +15,8 @@ class NightSkipTask : BukkitRunnable() {
         
         val currentTime = world.time
         
-        // Smoothly transition from night to day
         if (currentTime >= 12541) {
-            world.time = currentTime + 100
+            world.time = currentTime + 10
         } else {
             // Clear weather
             if (world.hasStorm()) {
