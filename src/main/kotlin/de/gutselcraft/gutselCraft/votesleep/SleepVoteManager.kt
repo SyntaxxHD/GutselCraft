@@ -221,6 +221,6 @@ object SleepVoteManager {
     }
     
     private fun clearTabListPrefix(player: Player) {
-        player.playerListName(null)
+        player.playerListName(Component.text(player.displayName).color(NamedTextColor.WHITE))
     }
 }
