@@ -231,11 +231,11 @@ Login: `IP:81`.
 **Forward Host IP:** `172.17.0.1`
 
 | Domain | Scheme | Forward Port | SSL |
-| :--- | :--- | :--- | :--- |
-| `admin.gutselcraft.de` | `https` | `8443` | Force SSL |
-| `karte.gutselcraft.de` | `http` | `8100` | Force SSL |
-| `proxy.gutselcraft.de` | `http` | `81` | Force SSL |
-| `gutselcraft.de` | `http` | `8080` | Force SSL |
+| :--- | :--- |:-------------| :--- |
+| `admin.gutselcraft.de` | `https` | `8443`       | Force SSL |
+| `karte.gutselcraft.de` | `http` | `8100`       | Force SSL |
+| `proxy.gutselcraft.de` | `http` | `81`         | Force SSL |
+| `gutselcraft.de` | `http` | `website:80` | Force SSL |
 
 ---
 
