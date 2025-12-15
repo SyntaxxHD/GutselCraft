@@ -213,7 +213,7 @@ object SleepVoteManager {
         } else {
             Component.text("✖ ").color(NamedTextColor.RED)
         }
-        player.playerListName(prefix.append(Component.text(player.displayName)))
+        player.playerListName(prefix.append(Component.text(player.displayName).color(NamedTextColor.WHITE)))
     }
     
     private fun clearTabListPrefix(player: Player) {
