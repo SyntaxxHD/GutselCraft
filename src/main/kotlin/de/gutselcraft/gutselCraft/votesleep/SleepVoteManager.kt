@@ -124,8 +124,12 @@ object SleepVoteManager {
             votes?.let { voteMap ->
                 voteMap[player.uniqueId] = false
                 bossBar?.addPlayer(player)
-                updateTabListPrefix(player, false)
                 updateBossBar()
+                
+                // Delay the tab list update to ensure nickname plugin has loaded
+                plugin.server.scheduler.runTaskLater(plugin, Runnable {
+                    updateTabListPrefix(player, false)
+                }, 5L) // 5 tick delay
                 
                 val message = Component.text("Jemand will Heia Bubu machen! ")
                     .color(NamedTextColor.WHITE)
