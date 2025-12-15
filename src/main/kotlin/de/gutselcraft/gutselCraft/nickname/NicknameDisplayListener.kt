@@ -1,4 +1,4 @@
-package de.gutselcraft.gutselCraft.joinmessages
+package de.gutselcraft.gutselCraft.nickname
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -8,25 +8,23 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.Plugin
 
-class JoinQuitMessageListener(private val plugin: Plugin) : Listener {
+class NicknameDisplayListener(private val plugin: Plugin) : Listener {
     
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val player = event.player
 
-        // Hide the default join message immediately
-        // This prevents showing the message with the original username before SimpleNicks loads
         event.joinMessage(null)
 
-        // Schedule a delayed message after SimpleNicks has had time to load the nickname
         plugin.server.scheduler.runTaskLater(plugin, Runnable {
-            // Use translatable component for language support
             plugin.server.broadcast(
                 Component.translatable(
                     "multiplayer.player.joined",
                     Component.text(player.displayName)
                 ).color(NamedTextColor.YELLOW)
             )
+            
+            updateOverheadName(player)
         }, 5L) // 5 tick delay
     }
     
@@ -38,5 +36,10 @@ class JoinQuitMessageListener(private val plugin: Plugin) : Listener {
                 Component.text(event.player.displayName)
             ).color(NamedTextColor.YELLOW)
         )
+    }
+    
+    private fun updateOverheadName(player: org.bukkit.entity.Player) {
+        player.customName(Component.text(player.displayName))
+        player.isCustomNameVisible = true
     }
 }
