@@ -278,3 +278,76 @@ Update `~/proxy/docker-compose.yml` to include the website:
               source: "."
               target: "/home/ubuntu/website/html"
     ```
+
+---
+
+## Phase 7: Expanding Storage (Block Volume)
+**Scenario:** Moving heavy data (BlueMap/Backups) to a separate 100GB Oracle Block Volume.
+
+### 7.1 Attach Volume (Oracle Console)
+1.  **Compute -> Instances -> Resources -> Attached block volumes.**
+2.  **Attach Block Volume:** Select your volume.
+3.  **Device Path:** `Paravirtualized` (Easier setup).
+4.  **Access:** Read/Write.
+
+### 7.2 Format & Mount (Terminal)
+1.  **Identify the Drive:** (Usually `sdb`)
+    ```bash
+    lsblk
+    ```
+2.  **Partition:**
+    ```bash
+    sudo fdisk /dev/sdb
+    # Type these letters in order:
+    # g (New GPT table) -> n (New partition) -> 1 -> Enter -> Enter -> w (Write)
+    ```
+3.  **Format (ext4):**
+    ```bash
+    sudo mkfs.ext4 /dev/sdb1
+    ```
+4.  **Create Mount Point:**
+    ```bash
+    sudo mkdir /mnt/extra
+    ```
+
+### 7.3 Persistence (Auto-Mount)
+1.  **Get UUID:**
+    ```bash
+    sudo blkid /dev/sdb1
+    # Copy string: UUID="xxxx-xxxx..."
+    ```
+2.  **Edit fstab:**
+    ```bash
+    sudo nano /etc/fstab
+    ```
+3.  **Add Line:** (Use `_netdev` to prevent boot hangs on cloud servers)
+    ```text
+    UUID=YOUR_UUID_HERE /mnt/extra ext4 defaults,nofail,_netdev 0 2
+    ```
+4.  **Test:**
+    ```bash
+    sudo mount -a
+    # If no errors, you are safe.
+    ```
+
+### 7.4 Usage Example: Offloading BlueMap
+Move the massive map data to the new drive but keep the server thinking it is in the original place.
+
+1.  **Stop Server** via Crafty.
+2.  **Move Data:**
+    ```bash
+    # Create destination
+    sudo mkdir -p /mnt/extra/bluemap-data
+    sudo chown -R crafty:crafty /mnt/extra
+    
+    # Move existing web folder (Replace SERVER_UUID with actual folder name)
+    sudo mv /var/opt/minecraft/crafty/crafty-4/servers/SERVER_UUID/plugins/BlueMap/web /mnt/extra/bluemap-data/
+    ```
+3.  **Create Symlink (Shortcut):**
+    ```bash
+    sudo ln -s /mnt/extra/bluemap-data/web /var/opt/minecraft/crafty/crafty-4/servers/SERVER_UUID/plugins/BlueMap/web
+    ```
+4.  **Fix Permissions:**
+    ```bash
+    sudo chown -h crafty:crafty /var/opt/minecraft/crafty/crafty-4/servers/SERVER_UUID/plugins/BlueMap/web
+    ```
