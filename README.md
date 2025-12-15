@@ -351,3 +351,33 @@ Move the massive map data to the new drive but keep the server thinking it is in
     ```bash
     sudo chown -h crafty:crafty /var/opt/minecraft/crafty/crafty-4/servers/SERVER_UUID/plugins/BlueMap/web
     ```
+
+## Phase 8: Mobile Support (Geyser + Floodgate)
+**Scenario:** Allow Bedrock (Phone/Console) players to join as their Java account (Shared inventory/whitelist).
+
+### 8.1 Installation
+1.  Download **Geyser-Spigot** and **Floodgate-Spigot**.
+2.  Place in `plugins` folder and restart.
+
+### 8.2 Configuration
+1.  Edit `plugins/Geyser-Spigot/config.yml`.
+2.  Set `remote.auth-type` to `floodgate`.
+3.  Ensure `port` is `19132`.
+
+### 8.3 Networking (Firewall)
+Bedrock uses **UDP** on port **19132**.
+
+1.  **Oracle Dashboard:** Add Ingress Rule -> Protocol UDP -> Port 19132.
+2.  **Ubuntu Terminal:**
+    ```bash
+    sudo iptables -I INPUT -p udp --dport 19132 -j ACCEPT
+    sudo netfilter-persistent save
+    
+    sudo firewall-cmd --permanent --zone=public --add-port=19132/udp
+    sudo firewall-cmd --reload
+    ```
+
+### 8.4 Linking Accounts (User Guide)
+1.  **Phone:** Join `link.geysermc.org` (Port 19132). Get code.
+2.  **PC (Java):** Join your server. Run `/linkaccount <code>`.
+3.  **Result:** Phone now logs in as the Java user. No new whitelist entry needed.
