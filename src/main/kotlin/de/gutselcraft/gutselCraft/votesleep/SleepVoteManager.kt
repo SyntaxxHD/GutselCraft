@@ -64,7 +64,9 @@ object SleepVoteManager {
             updateTabListPrefix(p, false)
             
             // Send clickable message
-            val message = Component.text("${player.displayName} will Heia Bubu machen! ")
+            val message = Component.empty()
+                .append(player.displayName())
+                .append(Component.text(" will Heia Bubu machen! "))
                 .color(NamedTextColor.WHITE)
                 .append(
                     Component.text("[Mitmachen]")
@@ -217,10 +219,10 @@ object SleepVoteManager {
         } else {
             Component.text("✖ ").color(NamedTextColor.RED)
         }
-        player.playerListName(prefix.append(Component.text(player.displayName).color(NamedTextColor.WHITE)))
+        player.playerListName(prefix.append(player.displayName().color(NamedTextColor.WHITE)))
     }
     
     private fun clearTabListPrefix(player: Player) {
-        player.playerListName(Component.text(player.displayName).color(NamedTextColor.WHITE))
+        player.playerListName(player.displayName().color(NamedTextColor.WHITE))
     }
 }

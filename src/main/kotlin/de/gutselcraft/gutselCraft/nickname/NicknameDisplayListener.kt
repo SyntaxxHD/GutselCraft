@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerAdvancementDoneEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.Plugin
@@ -20,12 +21,12 @@ class NicknameDisplayListener(private val plugin: Plugin) : Listener {
             plugin.server.broadcast(
                 Component.translatable(
                     "multiplayer.player.joined",
-                    Component.text(player.displayName)
+                    player.displayName()
                 ).color(NamedTextColor.YELLOW)
             )
             
             updateOverheadName(player)
-        }, 5L) // 5 tick delay
+        }, 5L)
     }
     
     @EventHandler
@@ -33,13 +34,37 @@ class NicknameDisplayListener(private val plugin: Plugin) : Listener {
         event.quitMessage(
             Component.translatable(
                 "multiplayer.player.left",
-                Component.text(event.player.displayName)
+                event.player.displayName()
             ).color(NamedTextColor.YELLOW)
         )
     }
     
+    @EventHandler
+    fun onPlayerAdvancementDone(event: PlayerAdvancementDoneEvent) {
+        val player = event.player
+        val advancement = event.advancement
+        
+        val display = advancement.display ?: return
+        
+        val messageKey = when (display.frame()) {
+            io.papermc.paper.advancement.AdvancementDisplay.Frame.CHALLENGE -> "chat.type.advancement.challenge"
+            io.papermc.paper.advancement.AdvancementDisplay.Frame.GOAL -> "chat.type.advancement.goal"
+            else -> "chat.type.advancement.task"
+        }
+        
+        event.message(null)
+        
+        plugin.server.broadcast(
+            Component.translatable(
+                messageKey,
+                player.displayName(),
+                display.title()
+            )
+        )
+    }
+    
     private fun updateOverheadName(player: org.bukkit.entity.Player) {
-        player.customName(Component.text(player.displayName))
+        player.customName(player.displayName())
         player.isCustomNameVisible = true
     }
 }

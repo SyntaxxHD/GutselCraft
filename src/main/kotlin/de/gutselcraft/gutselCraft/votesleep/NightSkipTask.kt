@@ -16,7 +16,7 @@ class NightSkipTask : BukkitRunnable() {
         val currentTime = world.time
         
         if (currentTime >= 12541) {
-            world.time = currentTime + 50
+            world.time = currentTime + 100
         } else {
             // Clear weather
             if (world.hasStorm()) {
