@@ -14,8 +14,6 @@ class PlayerBedEnterListener(private val plugin: Plugin) : Listener {
     fun onPlayerBedEnter(event: PlayerBedEnterEvent) {
         val player = event.player
         
-        // Only handle if it's night and player is in survival/adventure
-        if (!SleepVoteManager.isNight(player.world.time)) return
         if (player.gameMode != GameMode.SURVIVAL && player.gameMode != GameMode.ADVENTURE) return
         
         // Delay by 1 tick to ensure player is actually sleeping
