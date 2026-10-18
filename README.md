@@ -84,7 +84,7 @@ bash <(curl -s https://craftycontrol.com/install)
 
 -   **Access:**  https://YOUR_IP:8443
 
--   **Create Server:** Paper 1.21 (Java 21).
+-   **Create Server:** Paper or Folia 26.3 (Java 25).
 
 
 ### 2.2 Fixing Permissions (Critical for VS Code SSH)

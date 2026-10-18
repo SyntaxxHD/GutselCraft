@@ -12,7 +12,7 @@
     <name>GutselCraft</name>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>25</java.version>
         <kotlin.version>2.2.21</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -83,7 +83,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.21.10-R0.1-SNAPSHOT</version>
+            <version>26.3.build.205-stable</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

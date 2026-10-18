@@ -1,20 +1,24 @@
 package de.gutselcraft.gutselCraft.votesleep
 
-import org.bukkit.scheduler.BukkitRunnable
-import kotlin.random.Random
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask
+import java.util.function.Consumer
 
-class NightSkipTask : BukkitRunnable() {
-    
-    override fun run() {
+/**
+ * Smoothly advances the time of the vote world until morning. Must be scheduled on the global
+ * region scheduler, which owns world time and weather on Folia.
+ */
+class NightSkipTask : Consumer<ScheduledTask> {
+
+    override fun accept(task: ScheduledTask) {
         val world = SleepVoteManager.getVoteWorld()
-        
+
         if (world == null) {
-            cancel()
+            task.cancel()
             return
         }
-        
+
         val currentTime = world.time
-        
+
         if (currentTime >= 12541) {
             world.time = currentTime + 100
         } else {
@@ -23,9 +27,9 @@ class NightSkipTask : BukkitRunnable() {
                 world.setStorm(false)
                 world.isThundering = false
             }
-            
+
             SleepVoteManager.endVote()
-            cancel()
+            task.cancel()
         }
     }
 }

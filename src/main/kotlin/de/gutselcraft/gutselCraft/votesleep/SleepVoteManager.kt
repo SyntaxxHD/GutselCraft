@@ -4,38 +4,45 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import org.bukkit.*
 import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarStyle
 import org.bukkit.boss.BossBar
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
-import org.bukkit.scheduler.BukkitRunnable
-import org.bukkit.scheduler.BukkitTask
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
+/**
+ * Shared state is touched from several region threads on Folia (bed, join/quit and game mode events)
+ * plus the global region scheduler tasks, so it is kept thread-safe. World time is only touched from
+ * the global region scheduler, and per-player calls hop onto that player's entity scheduler.
+ */
 object SleepVoteManager {
-    
-    private var bossBar: BossBar? = null
-    private var votes: MutableMap<UUID, Boolean>? = null
-    private var voteWorld: World? = null
-    private var voteEndCheckTask: BukkitTask? = null
+
+    @Volatile private var bossBar: BossBar? = null
+    @Volatile private var votes: MutableMap<UUID, Boolean>? = null
+    @Volatile private var voteWorld: World? = null
+    @Volatile private var voteEndCheckTask: ScheduledTask? = null
+    @Volatile private var nightSkipTask: ScheduledTask? = null
     private lateinit var plugin: Plugin
-    
+
     fun initialize(plugin: Plugin) {
         this.plugin = plugin
     }
-    
+
+    @Synchronized
     fun startVote(player: Player) {
         // Check if player is in bed and no vote is running
         if (voteWorld != null) return
         if (!player.isSleeping) return
         if (player.gameMode != GameMode.SURVIVAL && player.gameMode != GameMode.ADVENTURE) return
-        
-        votes = mutableMapOf()
+
+        votes = ConcurrentHashMap()
         voteWorld = player.world
-        
-        // Count eligible players
+
+        // Count eligible players (read-only look at players that may live in other regions)
         val eligiblePlayers = Bukkit.getOnlinePlayers().filter { p ->
             p.world == voteWorld &&
             (p.gameMode == GameMode.SURVIVAL || p.gameMode == GameMode.ADVENTURE)
@@ -129,9 +136,9 @@ object SleepVoteManager {
                 updateBossBar()
                 
                 // Delay the tab list update to ensure nickname plugin has loaded
-                plugin.server.scheduler.runTaskLater(plugin, Runnable {
+                player.scheduler.runDelayed(plugin, {
                     updateTabListPrefix(player, false)
-                }, 5L) // 5 tick delay
+                }, null, 5L) // 5 tick delay
                 
                 val message = Component.text("Jemand will Heia Bubu machen! ")
                     .color(NamedTextColor.WHITE)
@@ -168,30 +175,36 @@ object SleepVoteManager {
                 // All players voted yes - reset sleep statistics for players still in bed
                 voteMap.keys.forEach { playerUuid ->
                     Bukkit.getPlayer(playerUuid)?.let { player ->
-                        if (player.isSleeping) {
-                            player.setStatistic(Statistic.TIME_SINCE_REST, 0)
+                        onPlayerThread(player) {
+                            if (player.isSleeping) {
+                                player.setStatistic(Statistic.TIME_SINCE_REST, 0)
+                            }
                         }
                     }
                 }
-                
-                // Start smooth night skip
-                NightSkipTask().runTaskTimer(plugin, 0, 1)
-            }
-        }
-    }
-    
-    private fun startVoteEndCheck() {
-        voteEndCheckTask = object : BukkitRunnable() {
-            override fun run() {
-                voteWorld?.let { world ->
-                    if (world.time in 1..12010) {
-                        endVote()
+
+                // Start smooth night skip (only once per vote)
+                synchronized(this) {
+                    if (nightSkipTask == null) {
+                        nightSkipTask = plugin.server.globalRegionScheduler
+                            .runAtFixedRate(plugin, NightSkipTask(), 1L, 1L)
                     }
                 }
             }
-        }.runTaskTimer(plugin, 0, 20L)
+        }
     }
-    
+
+    private fun startVoteEndCheck() {
+        voteEndCheckTask = plugin.server.globalRegionScheduler.runAtFixedRate(plugin, {
+            voteWorld?.let { world ->
+                if (world.time in 1..12010) {
+                    endVote()
+                }
+            }
+        }, 1L, 20L)
+    }
+
+    @Synchronized
     fun endVote() {
         // Clear tab list prefixes for all voting players
         votes?.keys?.forEach { playerUuid ->
@@ -207,22 +220,33 @@ object SleepVoteManager {
         
         voteEndCheckTask?.cancel()
         voteEndCheckTask = null
+        nightSkipTask?.cancel()
+        nightSkipTask = null
     }
     
     fun getVoteWorld(): World? = voteWorld
     
     fun isNight(time: Long): Boolean = time in 12541..23500
     
-    private fun updateTabListPrefix(player: Player, hasVoted: Boolean) {
-        val prefix = if (hasVoted) {
-            Component.text("✔ ").color(NamedTextColor.GREEN)
-        } else {
-            Component.text("✖ ").color(NamedTextColor.RED)
-        }
-        player.playerListName(prefix.append(player.displayName().color(NamedTextColor.WHITE)))
+    /** Runs [action] on the thread that owns [player] (a no-op if the player has left). */
+    private fun onPlayerThread(player: Player, action: () -> Unit) {
+        player.scheduler.run(plugin, { action() }, null)
     }
-    
+
+    private fun updateTabListPrefix(player: Player, hasVoted: Boolean) {
+        onPlayerThread(player) {
+            val prefix = if (hasVoted) {
+                Component.text("✔ ").color(NamedTextColor.GREEN)
+            } else {
+                Component.text("✖ ").color(NamedTextColor.RED)
+            }
+            player.playerListName(prefix.append(player.displayName().color(NamedTextColor.WHITE)))
+        }
+    }
+
     private fun clearTabListPrefix(player: Player) {
-        player.playerListName(player.displayName().color(NamedTextColor.WHITE))
+        onPlayerThread(player) {
+            player.playerListName(player.displayName().color(NamedTextColor.WHITE))
+        }
     }
 }

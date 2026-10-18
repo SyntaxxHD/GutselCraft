@@ -46,11 +46,11 @@ class WelcomeBookListener(private val plugin: Plugin) : Listener {
 
     private fun openWelcomeBook(player: Player) {
         // Schedule the book opening for next tick to ensure player is fully loaded
-        plugin.server.scheduler.runTaskLater(plugin, Runnable {
+        player.scheduler.runDelayed(plugin, {
             if (player.isOnline) {
                 val book = welcomeBookManager.createWelcomeBook()
                 player.openBook(book)
             }
-        }, 20L) // Wait 1 second (20 ticks) after join
+        }, null, 20L) // Wait 1 second (20 ticks) after join
     }
 }

@@ -16,16 +16,16 @@ class NicknameDisplayListener(private val plugin: Plugin) : Listener {
 
         event.joinMessage(null)
 
-        plugin.server.scheduler.runTaskLater(plugin, Runnable {
+        player.scheduler.runDelayed(plugin, {
             plugin.server.broadcast(
                 Component.translatable(
                     "multiplayer.player.joined",
                     player.displayName()
                 ).color(NamedTextColor.YELLOW)
             )
-            
+
             updateOverheadName(player)
-        }, 5L)
+        }, null, 5L)
     }
     
     @EventHandler

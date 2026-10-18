@@ -9,12 +9,12 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.Plugin
-import org.bukkit.scheduler.BukkitRunnable
+import java.util.concurrent.ConcurrentHashMap
 
 class FabricRecommendationListener(private val plugin: Plugin) : Listener {
 
-    private val checkedPlayers = mutableSetOf<String>()
-    private val fabricPlayers = mutableSetOf<String>()
+    private val checkedPlayers: MutableSet<String> = ConcurrentHashMap.newKeySet()
+    private val fabricPlayers: MutableSet<String> = ConcurrentHashMap.newKeySet()
 
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
@@ -34,24 +34,25 @@ class FabricRecommendationListener(private val plugin: Plugin) : Listener {
         checkedPlayers.add(player.name)
         
         // Wait a moment for the client to send their plugin channels
-        object : BukkitRunnable() {
-            override fun run() {
-                // Check if player is still online
-                if (!player.isOnline) {
-                    checkedPlayers.remove(player.name)
-                    return
-                }
-                
-                // Check if we detected Fabric (via the channel registration)
-                if (!fabricPlayers.contains(player.name)) {
-                    // Player is likely using vanilla client
-                    sendFabricRecommendation(player)
-                }
-                
-                // Cleanup
+        player.scheduler.runDelayed(plugin, {
+            // Check if player is still online
+            if (!player.isOnline) {
                 checkedPlayers.remove(player.name)
+                return@runDelayed
             }
-        }.runTaskLater(plugin, 40L) // Wait 2 seconds (40 ticks)
+
+            // Check if we detected Fabric (via the channel registration)
+            if (!fabricPlayers.contains(player.name)) {
+                // Player is likely using vanilla client
+                sendFabricRecommendation(player)
+            }
+
+            // Cleanup
+            checkedPlayers.remove(player.name)
+        }, {
+            // Player left before the task ran
+            checkedPlayers.remove(player.name)
+        }, 40L) // Wait 2 seconds (40 ticks)
     }
 
     /**

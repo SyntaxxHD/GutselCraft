@@ -1,7 +1,8 @@
 name: GutselCraft
 version: '1.0.0'
 main: de.gutselcraft.gutselCraft.GutselCraft
-api-version: '1.21'
+api-version: '26.3'
+folia-supported: true
 authors: [ Syntaxx ]
 description: Server Plugin for GutselCraft.de Minecraft Server
 website: https://gutselcraft.de

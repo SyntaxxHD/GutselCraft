@@ -11,13 +11,15 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.Plugin
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeUnit
 
 class DeathItemProtectionListener(private val plugin: Plugin) : Listener {
     
     private val deathItemKey = NamespacedKey(plugin, "death_item")
     
     // Temporary storage for death drops to match against spawned items
-    private val pendingDeathDrops = mutableMapOf<UUID, MutableList<ItemStack>>()
+    private val pendingDeathDrops = ConcurrentHashMap<UUID, MutableList<ItemStack>>()
     
     @EventHandler(priority = EventPriority.NORMAL)
     fun onPlayerDeath(event: PlayerDeathEvent) {
@@ -34,13 +36,14 @@ class DeathItemProtectionListener(private val plugin: Plugin) : Listener {
         }
         
         // Schedule a task to mark the items after they spawn
-        plugin.server.scheduler.runTaskLater(plugin, Runnable {
-            val location = event.player.location
+        // Region scheduler: the nearby-entity lookup must run on the thread owning the death location
+        val location = event.player.location.clone()
+        plugin.server.regionScheduler.runDelayed(plugin, location, {
             val nearbyItems = location.world?.getNearbyEntities(location, 5.0, 5.0, 5.0)
                 ?.filterIsInstance<Item>()
-                ?.toMutableList() ?: return@Runnable
-            
-            val expectedDrops = pendingDeathDrops.remove(playerId) ?: return@Runnable
+                ?.toMutableList() ?: return@runDelayed
+
+            val expectedDrops = pendingDeathDrops.remove(playerId) ?: return@runDelayed
             
             // Match spawned items with expected death drops
             expectedDrops.forEach { expectedStack ->
@@ -71,11 +74,11 @@ class DeathItemProtectionListener(private val plugin: Plugin) : Listener {
                         item.setUnlimitedLifetime(false)
                             
                             // Schedule despawn
-                            plugin.server.scheduler.runTaskLater(plugin, Runnable {
+                            item.scheduler.runDelayed(plugin, {
                                 if (item.isValid) {
                                     item.remove()
                                 }
-                            }, targetTicks.toLong())
+                            }, null, targetTicks.toLong())
                         }
                         else -> {
                             // despawnTime == 0, use normal despawn behavior
@@ -85,11 +88,11 @@ class DeathItemProtectionListener(private val plugin: Plugin) : Listener {
                 }
             }
         }, 1L) // Run after 1 tick to ensure items have spawned
-        
+
         // Clean up old pending drops after 5 seconds (just in case)
-        plugin.server.scheduler.runTaskLater(plugin, Runnable {
+        plugin.server.asyncScheduler.runDelayed(plugin, {
             pendingDeathDrops.remove(playerId)
-        }, 100L)
+        }, 5, TimeUnit.SECONDS)
     }
     
     @EventHandler(priority = EventPriority.HIGH)

@@ -1,7 +1,6 @@
 package de.gutselcraft.gutselCraft.votesleep.listeners
 
 import de.gutselcraft.gutselCraft.votesleep.SleepVoteManager
-import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -17,10 +16,10 @@ class PlayerBedEnterListener(private val plugin: Plugin) : Listener {
         if (player.gameMode != GameMode.SURVIVAL && player.gameMode != GameMode.ADVENTURE) return
         
         // Delay by 1 tick to ensure player is actually sleeping
-        Bukkit.getScheduler().runTaskLater(plugin, Runnable {
+        player.scheduler.runDelayed(plugin, {
             // Verify player is still sleeping (they might have left bed immediately)
-            if (!player.isSleeping) return@Runnable
-            
+            if (!player.isSleeping) return@runDelayed
+
             if (SleepVoteManager.getVoteWorld() == null) {
                 // No vote running - auto-start vote
                 SleepVoteManager.startVote(player)
@@ -28,6 +27,6 @@ class PlayerBedEnterListener(private val plugin: Plugin) : Listener {
                 // Vote is running in this world - auto-vote YES
                 SleepVoteManager.agreeToSleep(player)
             }
-        }, 1L)
+        }, null, 1L)
     }
 }
