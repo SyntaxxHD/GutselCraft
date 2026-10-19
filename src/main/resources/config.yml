@@ -13,6 +13,10 @@ anti-despawn:
 dynamic-slots:
   enabled: true
 
+# Random server icon: a random 64x64 PNG from plugins/GutselCraft/server-icons/ on every ping
+server-icon:
+  enabled: true
+
 # Welcome Book Settings
 welcome-book:
   enabled: true

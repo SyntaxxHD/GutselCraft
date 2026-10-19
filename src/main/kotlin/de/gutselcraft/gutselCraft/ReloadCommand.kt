@@ -8,7 +8,10 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.plugin.Plugin
 
-class ReloadCommand(private val plugin: Plugin) : CommandExecutor, TabCompleter {
+class ReloadCommand(
+    private val plugin: Plugin,
+    private val onReload: () -> Unit = {}
+) : CommandExecutor, TabCompleter {
     
     override fun onCommand(
         sender: CommandSender,
@@ -17,6 +20,7 @@ class ReloadCommand(private val plugin: Plugin) : CommandExecutor, TabCompleter 
         args: Array<out String>
     ): Boolean {
         plugin.reloadConfig()
+        onReload()
         sender.sendMessage(
             Component.text("GutselCraft Plugin reloaded!")
                 .color(NamedTextColor.GREEN)

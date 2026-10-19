@@ -8,6 +8,7 @@ import de.gutselcraft.gutselCraft.dynamicslots.listeners.ServerListPingListener
 import de.gutselcraft.gutselCraft.fabricrecommendation.FabricRecommendationListener
 import de.gutselcraft.gutselCraft.nickname.NicknameDisplayListener
 import de.gutselcraft.gutselCraft.ping.PingCommand
+import de.gutselcraft.gutselCraft.servericon.ServerIconListener
 import de.gutselcraft.gutselCraft.projectileknockback.ProjectileKnockbackListener
 import de.gutselcraft.gutselCraft.votesleep.SleepVoteManager
 import de.gutselcraft.gutselCraft.votesleep.commands.MitmachenCommand
@@ -33,6 +34,8 @@ class GutselCraft : JavaPlugin() {
         server.pluginManager.registerEvents(FabricRecommendationListener(this), this)
         server.pluginManager.registerEvents(ProjectileKnockbackListener(), this)
         server.pluginManager.registerEvents(ServerListPingListener(this), this)
+        val serverIconListener = ServerIconListener(this)
+        server.pluginManager.registerEvents(serverIconListener, this)
         server.pluginManager.registerEvents(WelcomeBookListener(this), this)
         server.pluginManager.registerEvents(NicknameDisplayListener(this), this)
         server.pluginManager.registerEvents(PlayerBedEnterListener(this), this)
@@ -50,7 +53,7 @@ class GutselCraft : JavaPlugin() {
             tabCompleter = antiDespawnCommand
         }
         
-        val reloadCommand = ReloadCommand(this)
+        val reloadCommand = ReloadCommand(this, serverIconListener::reload)
         getCommand("gutselcraft")?.apply {
             setExecutor(reloadCommand)
             tabCompleter = reloadCommand
